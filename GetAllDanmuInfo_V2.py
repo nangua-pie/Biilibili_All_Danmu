@@ -160,6 +160,12 @@ def GetAllDanmuInfo(id_, headers):
             Jump_Out_Flag = 0
             continue
 
+        # 触发b站风控，请求频率过高，停止爬取
+        req_data = re.split(',|"|:', req.text)
+        if req_data[3] == '-702':
+            print(req_data[8])
+            return None
+
         # 使用Protobuf脚本解码B站弹幕文件
         # From 1:https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/danmaku/history.md
         # From 2:https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/grpc_api/bilibili/community/service/dm/v1/dm.proto
