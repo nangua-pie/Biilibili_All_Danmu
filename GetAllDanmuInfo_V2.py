@@ -8,6 +8,7 @@ from LocalBulitTimeList import LocalBulitTimeList
 from RemoteBulitTimeList import RemoteBulitTimeList
 import dm_protobuf.dm_pb2 as dm_pb2
 from google.protobuf.json_format import MessageToDict
+from datetime import datetime
 import Sqlite3_Bilibili
 
 #关闭requests模块的InsecureRequestWarning警告提示
@@ -32,12 +33,13 @@ def GetAllDanmuInfo(id_, headers):
         bvid = bv.enc(int(str(id_).upper().replace("AV","")))
 
     # 获得视频投稿时间
-    web_url = f"https://www.bilibili.com/video/{bvid}"
+    web_url = f"https://api.bilibili.com/x/web-interface/view?bvid={bvid}"
     start_time_req = requests.get(url=web_url, headers = headers, verify=False)
+    pub_date = start_time_req.json()['data']['pubdate']
 
     # 使用正则表达式获得视频投稿时间
     try: 
-        infos = re.findall(r'<meta data-vue-meta="true" itemprop="uploadDate" content="(.*)"><meta data-vue-meta="true" itemprop="datePublished"', start_time_req.text)[0]
+        infos = datetime.fromtimestamp(pub_date)
     except:
         return None
 
@@ -57,9 +59,9 @@ def GetAllDanmuInfo(id_, headers):
         cid_num = cid_num[2]
 
     # 获得历史弹幕时间列表的时间范围
-    start_time_year = int(re.findall(r"(\d{4})", infos)[0])
-    start_time_month = int(re.findall(r"(-\d{1,2})", infos)[0].replace("-",""))
-    start_time_day = int(re.findall(r"(-\d{1,2})", infos)[1].replace("-",""))
+    start_time_year = infos.year
+    start_time_month = infos.month
+    start_time_day = infos.day
     
     end_time_year = int(time.strftime('%Y',time.localtime(time.time())))
     end_time_month = int(time.strftime('%m',time.localtime(time.time())))
