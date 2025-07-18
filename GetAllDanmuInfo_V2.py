@@ -134,7 +134,10 @@ def GetAllDanmuInfo(id_, headers):
 
         # 获取历史弹幕文件
         get_his_danmu_url = f"https://api.bilibili.com/x/v2/dm/web/history/seg.so?type=1&oid={str(cid_num)}&date={str(i)}"
-        req = requests.get(url = get_his_danmu_url, headers = headers, verify=False)
+        try:
+            req = requests.get(url = get_his_danmu_url, headers = headers, verify=False)
+        except:
+            req.status_code = 444
 
         # 获取弹幕文件出错
         if req.status_code != 200:
@@ -154,7 +157,10 @@ def GetAllDanmuInfo(id_, headers):
                 print(f"获取视频:{Video_title} 于{str(i)} 的历史弹幕失败,将于3秒后重试,重试次数:{str(Retry_Num)}")
                 time.sleep(3)
                 Retry_Num += 1
-                req = requests.get(url=get_his_danmu_url, headers = headers, verify=False)
+                try:
+                    req = requests.get(url=get_his_danmu_url, headers = headers, verify=False)
+                except:
+                    req.status_code = 444
 
         # 跳过当前日期的历史弹幕
         if Jump_Out_Flag == 1:
