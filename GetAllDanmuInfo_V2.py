@@ -170,7 +170,7 @@ def GetAllDanmuInfo(id_, headers):
 
         if req.text == "":
             print(f"视频:{Video_title} 于{str(i)} 的历史弹幕为空,将跳过该日历史弹幕数据。")
-            time.sleep(3)
+            #time.sleep(3)
             continue
 
         # 触发b站风控，请求频率过高，停止爬取
