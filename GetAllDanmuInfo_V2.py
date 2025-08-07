@@ -173,10 +173,9 @@ def GetAllDanmuInfo(id_, headers):
             #time.sleep(3)
             continue
 
-        # 触发b站风控，请求频率过高，停止爬取
-        req_data = re.split(',|"|:', req.text)
-        if req_data[3] == '-702':
-            print(req_data[8])
+        # code -702 触发风控 请求频率过高 停止爬取
+        if req.headers['Content-Type'] == 'application/json; charset=utf-8' and req.json()['code'] == -702:
+            print("请求频率过高，请稍后再试")
             return None
 
         # 使用Protobuf脚本解码B站弹幕文件
